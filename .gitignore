@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+.ipynb_checkpoints/
+.streamlit/secrets.toml
+.env
+*.pyc
+Thumbs.db
+.vscode/
+.git_antigo/
