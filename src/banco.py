@@ -44,6 +44,18 @@ try:
 
     conexao.commit()
 
+        # Conferir a quantidade de registros em cada tabela
+    total_tempo = conexao.execute(
+        "SELECT COUNT(*) FROM dim_tempo"
+    ).fetchone()[0]
+
+    total_indicadores = conexao.execute(
+        "SELECT COUNT(*) FROM fato_indicadores"
+    ).fetchone()[0]
+
+    print(f"Registros na dimensão tempo: {total_tempo}")
+    print(f"Registros na tabela fato: {total_indicadores}")
+
 
     # Executar as consultas SQL
     with open(arquivo_consultas, "r", encoding="utf-8") as arquivo:
