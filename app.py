@@ -49,7 +49,19 @@ with st.sidebar:
         st.session_state.intervalo = (base['data'].min().date(), base['data'].max().date())
     st.button('Resetar filtros', on_click=resetar)
     st.multiselect('Anos', anos, key='anos')
-    st.multiselect('Variáveis para correlação', ['selic','ipca_mensal','ipca_12m','dolar','ibc_br','juro_real'], key='variaveis')
+    st.multiselect(
+    'Variáveis para correlação',
+    ['selic', 'ipca_mensal', 'ipca_12m', 'dolar', 'ibc_br', 'juro_real'],
+    format_func=lambda x: {
+        'selic': 'Selic',
+        'ipca_mensal': 'IPCA mensal',
+        'ipca_12m': 'IPCA 12 meses',
+        'dolar': 'Dólar PTAX',
+        'ibc_br': 'IBC-Br',
+        'juro_real': 'Juro real estimado'
+    }.get(x, x),
+    key='variaveis'
+)
     st.date_input(
     "Período",
     min_value=base["data"].min().date(),
@@ -487,14 +499,29 @@ with aba4:
         correlacao = df[escolhidas].corr()
 
         # Mostrar a matriz de correlação
-        fig = px.imshow(
-            correlacao,
-            text_auto=".2f",
-            zmin=-1,
-            zmax=1,
-            color_continuous_scale="RdBu_r",
-            title="Correlação linear (-1 a +1)"
+                # Nomes mais amigáveis para mostrar no gráfico
+        nomes_indicadores = {
+            'selic': 'Selic',
+            'ipca_mensal': 'IPCA mensal',
+            'ipca_12m': 'IPCA 12 meses',
+            'dolar': 'Dólar PTAX',
+            'ibc_br': 'IBC-Br',
+            'juro_real': 'Juro real estimado'
+        }
+
+        # Criar uma cópia da matriz apenas para exibição
+        correlacao_grafico = correlacao.rename(
+            index=nomes_indicadores,
+            columns=nomes_indicadores
         )
+        fig = px.imshow(
+                correlacao_grafico,
+                text_auto=".2f",
+                zmin=-1,
+                zmax=1,
+                color_continuous_scale="RdBu_r",
+                title="Correlação linear (-1 a +1)"
+            )
 
         st.plotly_chart(fig, width="stretch")
 
@@ -512,6 +539,10 @@ with aba4:
 
         pares.columns = ["Variável 1", "Variável 2", "Correlação"]
 
+        # Melhorar os nomes dos indicadores na tabela e no gráfico
+        pares["Variável 1"] = pares["Variável 1"].replace(nomes_indicadores)
+        pares["Variável 2"] = pares["Variável 2"].replace(nomes_indicadores)
+
         # Ordenar pela força da correlação
         pares = pares.assign(
             Forca=pares["Correlação"].abs()
@@ -519,9 +550,14 @@ with aba4:
 
         # Mostrar a tabela
         st.dataframe(
-            pares.drop(columns="Forca"),
-            hide_index=True
-        )
+            pares.drop(columns="Forca").rename(columns={
+            "Variável 1": "Indicador 1",
+            "Variável 2": "Indicador 2",
+            "Correlação": "Correlação de Pearson"
+    }),
+    hide_index=True
+)
+    
 
         # Criar um nome para cada par de indicadores
         pares["Indicadores"] = (
