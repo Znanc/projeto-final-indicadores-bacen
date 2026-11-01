@@ -29,15 +29,19 @@ Foram utilizadas cinco séries:
 
 Fonte: https://dadosabertos.bcb.gov.br/
 
+**Período analisado:** 01/01/2019 a 31/12/2023.
+
+**Origem e utilização dos dados:** os indicadores foram obtidos de séries públicas disponibilizadas pelo Banco Central do Brasil por meio da API SGS. Os dados foram utilizados para fins educacionais, com identificação da fonte oficial. As condições de reutilização e eventual licença específica devem ser consultadas no Portal de Dados Abertos do Banco Central.
+
 ## 3. Ferramentas utilizadas
 
-- Python e Pandas — coleta, limpeza e preparação dos dados.
-- Requests — acesso à API do Banco Central.
-- SQLite e SQL — armazenamento e consultas.
-- Plotly — criação dos gráficos interativos.
-- Streamlit — desenvolvimento do dashboard.
-- Git e GitHub — versionamento do projeto.
-- Trello — organização das atividades.
+- **Python e Pandas:** utilizados para coletar, limpar, organizar e analisar os dados.
+- **Requests:** utilizado para acessar a API pública do Banco Central.
+- **SQLite e SQL:** utilizados para armazenar os dados em tabelas e realizar consultas.
+- **Plotly:** utilizado para criar gráficos interativos que facilitam a visualização dos indicadores.
+- **Streamlit:** utilizado para desenvolver o dashboard e permitir a interação com os dados.
+- **Git e GitHub:** utilizados para registrar as alterações do projeto e organizar o desenvolvimento por branches.
+- **Trello:** utilizado para planejar e acompanhar as atividades por meio do quadro Kanban.
 
 ## 4. Coleta e tratamento dos dados (ETL)
 
@@ -62,6 +66,32 @@ Foram encontrados quatro valores ausentes nas colunas calculadas, considerados e
 
 - Um na variação mensal do dólar, por não existir mês anterior na base.
 - Três no IPCA observado três meses depois, porque a base termina em dezembro de 2023.
+
+### 4.1. Dicionário de Dados
+
+A base tratada contém os indicadores econômicos coletados do Banco Central e algumas colunas calculadas durante o tratamento dos dados.
+
+| Coluna | Tipo de dado | Descrição |
+|---|---|---|
+| `data` | Data (datetime) | Mês de referência dos indicadores. |
+| `selic` | Decimal (float) | Taxa Selic Meta, em percentual ao ano. |
+| `ipca_mensal` | Decimal (float) | Variação mensal do IPCA, em percentual. |
+| `ipca_12m` | Decimal (float) | Inflação acumulada em 12 meses, em percentual. |
+| `dolar` | Decimal (float) | Cotação de venda do dólar PTAX, em reais. |
+| `ibc_br` | Decimal (float) | Índice de atividade econômica do Banco Central, dessazonalizado. |
+| `juro_real` | Decimal (float) | Estimativa do juro real calculada com a Selic e o IPCA acumulado em 12 meses, utilizando a fórmula de Fisher. |
+| `ano` | Inteiro (int) | Ano extraído da coluna `data`. |
+| `variacao_dolar_pct` | Decimal (float) | Variação percentual do dólar em relação ao mês anterior. |
+| `ipca_12m_prox_3m` | Decimal (float) | IPCA acumulado em 12 meses observado três meses depois, utilizado na análise de correlação. |
+
+**Regras de tratamento e cálculo:**
+
+- As datas foram convertidas para o formato datetime.
+- Os valores dos indicadores foram convertidos para números.
+- As séries foram organizadas mensalmente, utilizando o último valor disponível de cada mês.
+- O juro real estimado foi calculado pela fórmula de Fisher.
+- A variação do dólar foi calculada em relação ao mês anterior.
+- A coluna `ipca_12m_prox_3m` foi criada deslocando o IPCA acumulado em 12 meses três posições para o futuro.
 
 ## 5. Banco de dados e consultas SQL
 
@@ -138,6 +168,24 @@ O dashboard permite:
 - Visualizar gráficos e análises atualizados conforme a seleção.
 - Baixar os dados filtrados em CSV, com separador e formato decimal adequados ao Excel brasileiro.
 
+### 9.1. Demonstração do Dashboard
+
+O dashboard foi desenvolvido no Streamlit e permite acompanhar os indicadores macroeconômicos de forma interativa.
+
+**Tela principal da aplicação:**
+
+![Dashboard de indicadores macroeconômicos](imagens/dashboard_geral.png)
+
+**Como navegar pelo dashboard:**
+
+- **Filtros laterais:** permitem selecionar os anos, o período de análise e as variáveis utilizadas nas correlações.
+- **Aba Juros e inflação:** apresenta a evolução da Selic, do IPCA acumulado em 12 meses e do juro real estimado.
+- **Aba Câmbio:** apresenta o comportamento do dólar, a média histórica e a relação entre câmbio e inflação.
+- **Aba Atividade:** apresenta a evolução do IBC-Br e sua comparação com a Selic.
+- **Aba Correlações:** apresenta a matriz de Pearson e a comparação das correlações entre os indicadores.
+
+A aplicação também permite restaurar os filtros e baixar os dados filtrados em CSV.
+
 ## 10. Principais resultados
 
 Durante a análise, foram observados alguns comportamentos importantes:
@@ -160,6 +208,16 @@ O projeto possui algumas limitações:
 - As correlações indicam associações estatísticas, mas não comprovam causalidade.
 - A comparação do dólar com a inflação três meses depois utiliza valores futuros previamente calculados na base completa.
 - A análise utiliza indicadores agregados, sem considerar todos os fatores que podem influenciar a economia.
+
+### 11.1. Aplicação Profissional
+
+O dashboard pode ser utilizado por analistas e gestores financeiros para acompanhar o comportamento dos principais indicadores macroeconômicos brasileiros.
+
+A análise da Selic, inflação e câmbio pode ajudar no planejamento financeiro, na avaliação de custos e na compreensão do cenário econômico.
+
+O acompanhamento do IBC-Br também permite observar mudanças na atividade econômica, enquanto os gráficos de correlação ajudam a identificar possíveis associações entre os indicadores.
+
+Essas informações podem apoiar decisões de planejamento e análise de riscos, mas devem ser utilizadas em conjunto com outros dados e avaliações.
 
 ## 12. Como executar o projeto
 
@@ -184,6 +242,26 @@ streamlit run app.py
 ```
 
 O dashboard tenta utilizar uma conexão SQL configurada e, caso não esteja disponível, carrega o arquivo local `data/macro_tratado.csv`.
+
+### 12.1. Estrutura de Pastas
+
+O projeto foi organizado em pastas para separar os dados, os códigos de tratamento, as consultas SQL e a aplicação Streamlit.
+
+```text
+projeto_macro_bacen/
+├── data/                # Arquivos de dados brutos e tratados
+├── imagens/             # Imagem do quadro Trello
+├── notebooks/           # Análises e testes realizados
+├── sql/                 # Scripts de criação e consultas SQL
+├── src/                 # Scripts Python de ETL e banco de dados
+├── .streamlit/          # Configurações do Streamlit
+├── app.py               # Dashboard interativo
+├── requirements.txt     # Bibliotecas necessárias
+├── .gitignore           # Arquivos ignorados pelo Git
+└── README.md            # Documentação do projeto
+```
+
+Essa organização facilita a localização dos arquivos e a manutenção do projeto.
 
 
 ## 13. Organização e versionamento
@@ -218,3 +296,11 @@ Após a publicação, foram realizados testes dos filtros, gráficos e indicador
 As alterações foram registradas no GitHub utilizando branches e Pull Requests, seguindo o fluxo de desenvolvimento adotado no projeto.
 
 A aplicação utiliza o arquivo data/macro_tratado.csv como alternativa quando não há conexão com o banco SQL configurada.
+
+## 15. Referências
+
+- Banco Central do Brasil — Portal de Dados Abertos: https://dadosabertos.bcb.gov.br/
+- Banco Central do Brasil — Sistema Gerenciador de Séries Temporais (SGS): https://www3.bcb.gov.br/sgspub/
+- Documentação do Streamlit: https://docs.streamlit.io/
+- Documentação do Pandas: https://pandas.pydata.org/docs/
+- Documentação do Plotly: https://plotly.com/python/
