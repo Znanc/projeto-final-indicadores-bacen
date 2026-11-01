@@ -139,7 +139,7 @@ with aba1:
         yaxis_title="Taxa (%)"
     )
 
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
     # Encontrar os três meses com maiores juros reais
     maiores_juros = df.nlargest(3, "juro_real")[
@@ -208,7 +208,7 @@ with aba2:
         annotation_text=f"Média 2019–2023: R$ {media:.2f}"
     )
 
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
     # Identificar os meses acima da média histórica
     meses_acima = int((df["dolar"] > media).sum())
@@ -298,7 +298,7 @@ with aba2:
         title="PTAX vs IPCA acumulado em 12 meses"
     )
 
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
     # Calcular as correlações
     correlacao_atual = df[["dolar", "ipca_12m"]].corr().iloc[0, 1]
@@ -550,7 +550,7 @@ with aba4:
             yaxis=dict(autorange="reversed")
         )
 
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
 
         # Análise das correlações conforme os filtros
         st.write("**Análise dos indicadores:**")
