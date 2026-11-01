@@ -36,7 +36,7 @@ def baixar_serie(nome, codigo):
 
 
 def preparar():
-    DATA.mkdir(exist_ok=True)
+    DATA.mkdir(parents=True, exist_ok=True)
     # Frequências diferentes: mensal para inflação/IBC-Br, diária para Selic/PTAX.
     # A comparação mensal usa o último valor disponível no mês para séries diárias.
     series = []
