@@ -19,12 +19,17 @@ def carregar():
         if df.empty:
             raise ValueError('Banco sem registros')
         return df
+    
     except Exception:
+        # Se a conexão SQL não estiver disponível, utiliza o CSV tratado
         caminho = ROOT / 'data' / 'macro_tratado.csv'
+
         if not caminho.exists():
             st.error('Base não encontrada. Execute: python -m src.etl')
             st.stop()
+
         return pd.read_csv(caminho)
+
 
 base = carregar()
 base['data'] = pd.to_datetime(base['data'])
