@@ -185,19 +185,36 @@ streamlit run app.py
 
 O dashboard tenta utilizar uma conexão SQL configurada e, caso não esteja disponível, carrega o arquivo local `data/macro_tratado.csv`.
 
+
 ## 13. Organização e versionamento
 
-O desenvolvimento foi organizado utilizando Trello e GitHub.
+O desenvolvimento do projeto foi organizado utilizando Trello e GitHub.
 
-Foram utilizadas branches para separar as etapas de desenvolvimento e facilitar o acompanhamento das alterações.
+No Trello, as atividades foram distribuídas entre as etapas Backlog, A fazer, Em andamento e Concluído, permitindo acompanhar o andamento do projeto.
 
-**Quadro Trello:** Em preparação
+No GitHub, foram utilizadas branches para separar o desenvolvimento das funcionalidades, as correções e a versão principal da aplicação.
 
-**Imagem do Trello:** Em preparação
+As alterações foram registradas por meio de commits e Pull Requests, utilizando as branches `develop` e `main`.
+
+**Repositório GitHub:** https://github.com/Znanc/projeto-final-indicadores-bacen
+
+**Pull Requests:** https://github.com/Znanc/projeto-final-indicadores-bacen/pulls?q=is%3Apr+is%3Aclosed
+
+**Quadro Trello:** [Projeto Final — BI Macroeconômico BACEN](https://trello.com/b/NCqtPMVQ/projeto-final-bi-macroeconomico-bacen)
+
+**Imagem do Trello:**
+
+![Organização das atividades no Trello](imagens/trello_projeto.png)
+
 
 ## 14. Publicação 
 
-**Aplicação Streamlit:** Em preparação
+O dashboard foi publicado no Streamlit Community Cloud, utilizando o repositório do GitHub, a branch main e o arquivo app.py.
 
+Aplicação publicada: https://indicadores-macro-bacen.streamlit.app
 
-O dashboard foi desenvolvido e testado localmente. A publicação e a apresentação serão acrescentadas após a conclusão dessas etapas.
+Após a publicação, foram realizados testes dos filtros, gráficos e indicadores. Também foram feitos ajustes nos nomes dos indicadores para facilitar a leitura das informações.
+
+As alterações foram registradas no GitHub utilizando branches e Pull Requests, seguindo o fluxo de desenvolvimento adotado no projeto.
+
+A aplicação utiliza o arquivo data/macro_tratado.csv como alternativa quando não há conexão com o banco SQL configurada.
